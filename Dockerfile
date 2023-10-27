@@ -1,6 +1,8 @@
 FROM alpine:3.16.0
+# FROM python:3.9-slim-buster
 # FROM amazonlinux:2023.2.20231018.2
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.7.1 /lambda-adapter /opt/extensions/lambda-adapter
+ENV AWS_LWA_PORT=8000
 WORKDIR /home
 
 RUN set -xe;
@@ -21,7 +23,7 @@ RUN apk add --no-cache python3 py3-pip tini; \
 WORKDIR /home/martor_demo
 # RUN chmod 777 *
 RUN python3 manage.py collectstatic
-EXPOSE 8000/tcp
+EXPOSE 8000
 
 # ENTRYPOINT [ "tini", "--" ]
 CMD ["gunicorn", "martor_demo.wsgi:application", "-w", "1", "-b", "0.0.0.0:8000"]
